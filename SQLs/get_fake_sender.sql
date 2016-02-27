@@ -1,10 +1,11 @@
-DROP FUNCTION get_fake_sender(character varying,character varying);
-CREATE OR REPLACE FUNCTION get_fake_sender(sender character varying, recip character varying) RETURNS SETOF character varying
+-- DROP FUNCTION get_fake_sender(character varying,character varying);
+CREATE OR REPLACE FUNCTION get_fake_sender(sender character varying, recip character varying) RETURNS RECORD
     LANGUAGE plpgsql
     AS $$
     DECLARE
         fs VARCHAR(160);
         real_recip VARCHAR(160);
+        ret RECORD;
     BEGIN
         SELECT fake_sender INTO fs
         FROM fake_senders
@@ -20,6 +21,7 @@ CREATE OR REPLACE FUNCTION get_fake_sender(sender character varying, recip chara
         SELECT email INTO real_recip
         FROM users, aliases
         WHERE aliases.alias = recip AND aliases.user_id = users.user_id;
-        RETURN fs, real_recip;
+        ret := (fs, real_recip);
+        RETURN ret;
     END;
 $$;
