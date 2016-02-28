@@ -18,7 +18,7 @@ def get_fake_sender(real_sender, recipient):
     # return '4576asd@address.stonith.pl'
     connection = db_connect()
     cursor = connection.cursor()
-    cursor.execute("SELECT get_fake_sender(%s, %s)", (real_sender, recipient))
+    cursor.execute("SELECT sender, recipient FROM get_fake_sender(%s, %s) AS (sender VARCHAR(160), recipient VARCHAR(160))", (real_sender, recipient))
     fake_sender = cursor.fetchone()
     return fake_sender[0]
 
